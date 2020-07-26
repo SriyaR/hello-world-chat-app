@@ -1,110 +1,53 @@
-import React from 'react';
-import config from './config';
-import io from 'socket.io-client';
-
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-
-import BottomBar from './BottomBar';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Login from './components/Login';
+import Register from './components/Register';
+import Chat from './components/Chat';
+import UserContext from "./context/userContext";
+import Axios from "axios";
 import './App.css';
 
-class App extends React.Component{
-	constructor(props){
-		super(props);
-		this.state = {
-			chat: [],
-			content: '',
-			from: '',
-			to: '',
-		};
-	}
-	
-	componentDidMount(){
-		this.socket = io(config[process.env.NODE_ENV].endpoint)
-		this.socket.on('init', (msg) => {
-			this.setState((state)=> ({
-				chat: [...state.chat, ...msg.reverse()],
-			}), this.scrollToBottom);
-		});
-	}
-	
-	handleContent(event){
-		this.setState({
-			content: event.target.value,
-		});
-	}
-	
-	handleFrom(event) {
-		this.setState({
-		from: event.target.value,
-		});
-	}
-	handleTo(event) {
-		this.setState({
-			to: event.target.value,
-		});
-	}
-	
-	handleSubmit(event){
-		console.log(event);
-		event.preventDefault();
-		this.setState((state)=>{
-			console.log(state);
-			console.log('this', this.socket);
-			this.socket.emit('message',{
-				from: state.from,
-				to: state.to,
-				content: state.content,
+export default function App()
+{
+	const [userData, setUserData] = useState({
+		token: undefined,
+		user: undefined,
+	});
+
+	useEffect(() => {
+		const checkLoggedIn = async () => {
+			let token = localStorage.getItem("auth-token");
+			if (token === null) {
+				localStorage.setItem("auth-token", "");
+				token = "";
+			}
+			const userRes = await Axios.get("http://localhost:5000/users/", {
+				headers: { "x-auth-token": token },
 			});
-			return{
-				chat: [...state.chat,{
-					from: state.from,
-					to: state.to,
-					content: state.content,
-				}],
-				content: '',
-			};
-		}, this.scrollToBottom);
-	}
-	
-	scrollToBottom() {
-    const chat = document.getElementById('chat');
-    chat.scrollTop = chat.scrollHeight;
-	}
-	
-	render() {
-    return (
-      <div className="App">
-        <Paper id="chat" elevation={3}>
-          {this.state.chat.map((el, index) => {
-            return (
-              <div key={index}>
-                <Typography variant="caption" className="from">
-                  {el.from}
-                </Typography>
-				<Typography variant="caption" className="to">
-                  {el.to}
-                </Typography>
-                <Typography variant="body1" className="content">
-                  {el.content}
-                </Typography>
-              </div>
-            );
-          })}
-        </Paper>
-        <BottomBar
-          content={this.state.content}
-          handleContent={this.handleContent.bind(this)}
-          handleFrom={this.handleFrom.bind(this)}
-		  handleTo={this.handleTo.bind(this)}
-          handleSubmit={this.handleSubmit.bind(this)}
-          from={this.state.from}
-		  to={this.state.to}
-        />
-      </div>
-    );
-  }
-};
+			setUserData({
+				token,
+				user: userRes.data,
+			});
+		};
 
+		checkLoggedIn();
+	}, []);
 
-export default App;
+	return (
+		<>
+		  <BrowserRouter>
+			<UserContext.Provider value={{ userData, setUserData }}>
+			  <div className="container">
+				<Header/>
+				<Switch>
+				  <Route exact path="/" component={Login} />
+				  <Route path="/register" component={Register} />
+				  <Route path="/chat" component={Chat} />
+				</Switch>
+			  </div>
+			</UserContext.Provider>
+		  </BrowserRouter>
+		</>
+  );
+}

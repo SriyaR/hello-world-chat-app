@@ -7,15 +7,25 @@ const io = require('socket.io')(http);
 const uri = process.env.MONGODB_URI;
 const port = process.env.PORT || 5000;
 
-const Message = require('./Message');
+const Message = require('./models/Message');
 const mongoose = require('mongoose');
+
+
+
+app.use(express.json());
+
+app.use("/users", require("./routes/userRoute"));
+
+app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
 mongoose.connect(uri, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true,
+	useCreateIndex: true,
+}).catch((err)=>{
+	console.log(err);
 });
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
 io.on('connection', (socket) => {
 	Message.find().sort({createdAt: -1}).exec((err, messages) => {
