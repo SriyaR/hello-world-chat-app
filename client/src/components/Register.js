@@ -15,8 +15,9 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      const newUser = { email, password, name };
-      await Axios.post("http://localhost:5000/users/register", newUser);
+      const newUser = { email, password, name };const baseUrl =  process.env.BASE_URL || "http://localhost:5000";
+      const loginRes = await Axios.post(
+        baseUrl+"/users/register", newUser);
       history.push('/');
     } catch (err) {
       err.response.data.msg && setError(err.response.data.msg);

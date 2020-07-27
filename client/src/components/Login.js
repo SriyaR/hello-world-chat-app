@@ -16,8 +16,9 @@ export default function Login() {
     e.preventDefault();
     try {
       const loginUser = { email, password };
+	  const baseUrl =  process.env.BASE_URL || "http://localhost:5000";
       const loginRes = await Axios.post(
-        "http://localhost:5000/users/login",
+        baseUrl+"/users/login",
         loginUser
       );
       setUserData({
