@@ -18,7 +18,7 @@ export default function Login() {
       const loginUser = { email, password };
 	  const production  = 'https://hello-world-chat-app.herokuapp.com/';
 	  const development = 'http://localhost:5000/';
-	  const baseUrl = (process.env.NODE_ENV ? production : development);
+	  const baseUrl = (process.env.NODE_ENV==="production" ? production : development);
       const loginRes = await Axios.post(
         baseUrl+"users/login",
         loginUser
@@ -28,7 +28,7 @@ export default function Login() {
         user: loginRes.data.user,
       });
       localStorage.setItem("auth-token", loginRes.data.token);
-      history.push("/chat");
+      history.push("/home");
     } catch (err) {
       err.response.data.msg && setError(err.response.data.msg);
     }

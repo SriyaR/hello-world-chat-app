@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Login from './components/Login';
 import Register from './components/Register';
 import Chat from './components/Chat';
+import Home from './components/Home';
 import UserContext from "./context/userContext";
 import Axios from "axios";
 import './style.css';
@@ -45,6 +46,7 @@ export default function App()
 				  <Route path="/login" component={Login} />
 				  <Route path="/register" component={Register} />
 				  <Route path="/chat" component={Chat} />
+				  <Route path="/home" component={Home} />
 				</Switch>
 			  </div>
 			</UserContext.Provider>

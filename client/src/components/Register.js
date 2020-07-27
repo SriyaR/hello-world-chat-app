@@ -18,7 +18,7 @@ export default function Register() {
       const newUser = { email, password, name };
 	  const production  = 'https://hello-world-chat-app.herokuapp.com/';
 	  const development = 'http://localhost:5000/';
-	  const baseUrl = (process.env.NODE_ENV ? production : development);
+	  const baseUrl = (process.env.NODE_ENV==="production" ? production : development);
       await Axios.post(
         baseUrl+"users/register", newUser);
       history.push('/');

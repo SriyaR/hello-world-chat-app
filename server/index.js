@@ -19,7 +19,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/users", require("./routes/userRoute"));
-
+app.use("/rooms", require("./routes/roomRoute"));
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
 mongoose.connect(uri, {

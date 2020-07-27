@@ -37,7 +37,6 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
 	try{
-		console.log("start");
 		const email = req.body.email;
 		const password = req.body.password;
 		if (!email || !password)
@@ -64,4 +63,30 @@ router.post("/login", async (req, res) => {
 		res.status(500).json({error: err.message});
 	}
 });
+
+router.post("/getRoom", async (req, res) => {
+	try{
+		const name = req.body.name;
+		if (!name)
+			return res.status(400).json({msg:'Required fields have to be filled'});
+		const user = await User.findOne({name: name});
+		if (!user)
+			return res.status(400).json({msg:'No user exists for this email'});
+		
+		const token = jwt.sign({id: user._id}, process.env.JWT_TOKEN);
+		res.json({
+			token, 
+			user: {
+				id: user._id,
+				name: name, 
+				room: user.room,
+			},
+		});
+		
+	}catch(err)
+	{
+		res.status(500).json({error: err.message});
+	}
+});
+
 module.exports = router;

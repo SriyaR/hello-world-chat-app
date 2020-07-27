@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 
+var roomSchema = new mongoose.Schema({
+	roomName : String,
+})
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -16,6 +19,7 @@ const userSchema = new mongoose.Schema({
     required: true,
 	minlength: 5,
   },
+  room: [roomSchema]
 });
 
 module.exports = mongoose.model("User", userSchema);
