@@ -16,9 +16,11 @@ export default function Login() {
     e.preventDefault();
     try {
       const loginUser = { email, password };
-	  const baseUrl =  process.env.BASE_URL || "http://localhost:5000";
+	  const production  = 'https://hello-world-chat-app.herokuapp.com/';
+	  const development = 'http://localhost:5000/';
+	  const baseUrl = (process.env.NODE_ENV ? production : development);
       const loginRes = await Axios.post(
-        baseUrl+"/users/login",
+        baseUrl+"users/login",
         loginUser
       );
       setUserData({
