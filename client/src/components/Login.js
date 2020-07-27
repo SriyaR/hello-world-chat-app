@@ -17,7 +17,7 @@ export default function Login() {
     try {
       const loginUser = { email, password };
       const loginRes = await Axios.post(
-        "http://localhost:3000/users/login",
+        "http://localhost:5000/users/login",
         loginUser
       );
       setUserData({
@@ -25,7 +25,7 @@ export default function Login() {
         user: loginRes.data.user,
       });
       localStorage.setItem("auth-token", loginRes.data.token);
-      history.push("/");
+      history.push("/chat");
     } catch (err) {
       err.response.data.msg && setError(err.response.data.msg);
     }

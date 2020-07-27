@@ -6,7 +6,7 @@ import Register from './components/Register';
 import Chat from './components/Chat';
 import UserContext from "./context/userContext";
 import Axios from "axios";
-import './App.css';
+import './style.css';
 
 export default function App()
 {
@@ -42,6 +42,7 @@ export default function App()
 				<Header/>
 				<Switch>
 				  <Route exact path="/" component={Login} />
+				  <Route path="/login" component={Login} />
 				  <Route path="/register" component={Register} />
 				  <Route path="/chat" component={Chat} />
 				</Switch>

@@ -10,9 +10,13 @@ const port = process.env.PORT || 5000;
 const Message = require('./models/Message');
 const mongoose = require('mongoose');
 
-
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors());
+var bodyParser = require('body-parser');
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/users", require("./routes/userRoute"));
 

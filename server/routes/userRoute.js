@@ -5,7 +5,9 @@ const User = require("../models/User");
 
 router.post("/register", async (req, res) => {
 	try{
-		let {name, email, password} = req.body;
+		const email = req.body.email;
+		const password = req.body.password;
+		const name = req.body.name;
 		if (!name || !email || !password)
 			return res.status(400).json({msg:'Required fields have to be filled'});
 		if (password.length<5 || password.length>15)
@@ -35,7 +37,9 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
 	try{
-		let {email, password} = req.body;
+		console.log("start");
+		const email = req.body.email;
+		const password = req.body.password;
 		if (!email || !password)
 			return res.status(400).json({msg:'Required fields have to be filled'});
 		const user = await User.findOne({email: email});
