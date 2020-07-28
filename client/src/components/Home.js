@@ -1,58 +1,66 @@
-import React from "react";
+import React , {useContext, useEffect, useState} from "react";
 import UserContext from "../context/userContext";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 
-class Home extends React.Component {
+export default function Home (){
 	
-	static contextType = UserContext
+	const { userData } = useContext(UserContext);
+	const [ data, setData ] = useState([])
 	
-	
-	getData = () => {
-		const name = this.context;
-		console.log(name);
-		const production  = 'https://hello-world-chat-app.herokuapp.com/';
-		const development = 'http://localhost:5000/';
-		const baseUrl = (process.env.NODE_ENV==="production" ? production : development);
-		const data = {'name':name}
-		Axios.post(
-			baseUrl+"users/getRoom",
-			data,
-		).then(function (result) {
-			this.setState({roomData: result.data.user.room});
-		});
-	}
-	componentDidMount(){
-		this.getData();
-	}
-	
-	createTable = (roomData, index) => {
-		if (!roomData.length) return null;
+	useEffect(() => {
+		if (userData.user)
+		{
+			async function getData()
+			{
+				const name = userData.user.name;
+				const production  = 'https://hello-world-chat-app.herokuapp.com/';
+				const development = 'http://localhost:5000/';
+				const baseUrl = (process.env.NODE_ENV==="production" ? production : development);
+				const data = {'name':name}
+				var resData;
+				await Axios.post(
+					baseUrl+"users/getRoom",
+					data,
+				).then(function (result) {
+					resData= result.data.user.room;
+				});
+				setData(resData);
+			}
+			getData();
+		}
 		
-		roomData.map(() => (
-			<div key={index}>
-				<p>roomData.roomName</p>
+	});
+	
+	const createTable = (index) => {
+		if (!data) return null;
+		
+		if (!data.length) return (<div> Create Room </div>);
+		
+		var rooms = [<Link to="/addRoom"><div> Create Room </div></Link>];
+		rooms.push(data.map((room, index) => 
+			(
+			<Link to={"chat/"+room.roomName}>
+			<div key={index} >
+				<p>{room.roomName}</p>
 			</div>
-		));
+			</Link>
+		)));
+		return rooms;
 	};
 	
-  render()
-  {
 	return(
-	<div>
-	  {this.context.userData.user ? (
-			<table>
-				{this.createTable(this.state.roomData)}
-			</table>
-		  ) : (
-			<>
-			  <h2>You are not logged in</h2>
-			  <Link to="/login">Log in</Link>
-			</>
-		  )}
-    </div>
-    );
-  }
+		<div>
+		  {userData.user ? (
+			<div>
+			  {createTable()}
+			</div>
+			  ) : (
+				<>
+				  <h2>You are not logged in</h2>
+				  <Link to="/login">Log in</Link>
+				</>
+			  )}
+		</div>
+	);
 }
-
-export default Home;

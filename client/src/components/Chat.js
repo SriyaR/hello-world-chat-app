@@ -1,107 +1,78 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import UserContext from "../context/userContext";
+
 import config from '../config';
 import io from 'socket.io-client';
+import { Link } from "react-router-dom";
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 import BottomBar from '../BottomBar';
 
-class App extends React.Component{
-	constructor(props){
-		super(props);
-		this.state = {
-			chat: [],
-			content: '',
-			from: '',
-			to: '',
-		};
-	}
+export default function App () {
+	const { userData } = useContext(UserContext);
+	const [chat, setChat] = useState([]);
+	const [message, setMessage] = useState();
+	const [response, setResponse] = useState();
+		
+	const handleContent = (event) => {
+		setMessage(event.target.value);
+	};
 	
-	componentDidMount(){
-		this.socket = io(config[process.env.NODE_ENV].endpoint)
-		this.socket.on('init', (msg) => {
-			this.setState((state)=> ({
-				chat: [...state.chat, ...msg.reverse()],
-			}), this.scrollToBottom);
-		});
-	}
-	
-	handleContent(event){
-		this.setState({
-			content: event.target.value,
-		});
-	}
-	
-	handleFrom(event) {
-		this.setState({
-		from: event.target.value,
-		});
-	}
-	handleTo(event) {
-		this.setState({
-			to: event.target.value,
-		});
-	}
-	
-	handleSubmit(event){
-		console.log(event);
+	const handleSubmit = (event) => {
 		event.preventDefault();
-		this.setState((state)=>{
-			console.log(state);
-			console.log('this', this.socket);
-			this.socket.emit('message',{
-				from: state.from,
-				to: state.to,
-				content: state.content,
-			});
-			return{
-				chat: [...state.chat,{
-					from: state.from,
-					to: state.to,
-					content: state.content,
-				}],
-				content: '',
+		
+		return{
+			chat: [...chat,{
+				sender: userData.user.name,
+				message: message,
+			}],
+			message: '',
 			};
-		}, this.scrollToBottom);
-	}
+	};
 	
-	scrollToBottom() {
-    const chat = document.getElementById('chat');
-    chat.scrollTop = chat.scrollHeight;
-	}
+	const scrollToBottom = () => {
+		const chat = document.getElementById('chat');
+		chat.scrollTop = chat.scrollHeight;
+	};
+	useEffect(() => {
+		const socket = io(config[process.env.NODE_ENV].endpoint);
+		socket.on("init", data => {
+		  setResponse(data);
+		});
+
+		// CLEAN UP THE EFFECT
+		return () => socket.disconnect();
+    //
+  }, []);
 	
-	render() {
     return (
-      <div className="App">
+      <div>
+	  {userData.user ? (
+	  <div className="App">
         <Paper id="chat" elevation={3}>
-          {this.state.chat.map((el, index) => {
+          {chat.map((el, index) => {
             return (
               <div key={index}>
-                <Typography variant="caption" className="from">
-                  {el.from}
-                </Typography>
-				<Typography variant="caption" className="to">
-                  {el.to}
-                </Typography>
-                <Typography variant="body1" className="content">
-                  {el.content}
+                <Typography variant="body1" className="message">
+                  {el.message}
                 </Typography>
               </div>
             );
           })}
         </Paper>
         <BottomBar
-          content={this.state.content}
-          handleContent={this.handleContent.bind(this)}
-          handleFrom={this.handleFrom.bind(this)}
-		  handleTo={this.handleTo.bind(this)}
-          handleSubmit={this.handleSubmit.bind(this)}
-          from={this.state.from}
-		  to={this.state.to}
+          message={message}
+          handleContent={handleContent.bind(this)}
+          handleSubmit={handleSubmit.bind(this)}
         />
       </div>
-    );
-  }
+    ):(
+		<>
+			<h2>You are not logged in</h2>
+			<Link to="/login">Log in</Link>
+		</>
+	)}
+	</div>);
 };
-export default App;
