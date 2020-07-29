@@ -36,13 +36,13 @@ io.on('connection', (socket) => {
 	socket.on('room', (msg) => {
 		socket.join(msg.room);
 		room = msg.room;
+		Message.find({room: room}).sort({createdAt: -1}).exec((err, messages) => {
+			if (err) return console.error(err);
+			socket.emit('init',messages);	
+		});
 	})
 	
-	Message.find({room: room}).sort({createdAt: -1}).exec((err, messages) => {
-		if (err) return console.error(err);
-		console.log(messages);
-		socket.emit('init',messages);	
-	});
+	
 	
 	socket.on('message', (msg) => {
 		const message = new Message({

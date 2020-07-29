@@ -63,7 +63,7 @@ class App extends React.Component{
 					message: this.state.message,
 				}],
 				message: '',
-			}
+			};
 		}, this.scrollToBottom);
 	};
 	

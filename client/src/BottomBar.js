@@ -53,13 +53,13 @@ export default function BottomBar(props) {
             </div>
             <InputBase
               onChange={props.handleContent}
-              value={props.content}
+              value={props.message}
               placeholder="Type your message..."
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
               }}
-              inputProps={{ 'aria-label': 'content' }}
+              inputProps={{ 'aria-label': 'message' }}
             />
           </form>
         </div>
