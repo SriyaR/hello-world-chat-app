@@ -1,5 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
-import UserContext from "../context/userContext";
+import React from 'react';
 
 import config from '../config';
 import io from 'socket.io-client';
@@ -10,69 +9,99 @@ import Typography from '@material-ui/core/Typography';
 
 import BottomBar from '../BottomBar';
 
-export default function App () {
-	const { userData } = useContext(UserContext);
-	const [chat, setChat] = useState([]);
-	const [message, setMessage] = useState();
-	const [response, setResponse] = useState();
-		
-	const handleContent = (event) => {
-		setMessage(event.target.value);
-	};
-	
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		
-		return{
-			chat: [...chat,{
-				sender: userData.user.name,
-				message: message,
-			}],
+class App extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {
+			chat: [],
 			message: '',
-			};
+			sender: localStorage.getItem("username"),
+			room: window.location.href.split("/").slice(-1)[0],
+		};
+	}
+
+	componentDidMount(){
+		if (this.state.sender)
+		{
+			this.socket = io(config[process.env.NODE_ENV].endpoint)
+			this.socket.emit('room', {
+				room: this.state.room,
+			});
+			this.socket.on('init', (msg) => {
+				this.setState((state)=> ({
+					chat: [...state.chat, ...msg.reverse()],
+				}), this.scrollToBottom);
+			});
+			this.socket.on('push', (msg) => {
+			  this.setState((state) => ({
+				chat: [...state.chat, msg],
+			  }), this.scrollToBottom);
+			});
+		}
+	}
+
+	handleContent(event){
+		this.setState({
+			message: event.target.value,
+		});
+	}
+	
+	handleSubmit = (event) => {
+		event.preventDefault();
+		this.setState((state)=>{
+			console.log(state);
+			console.log('this', this.socket);
+			this.socket.emit('message',{
+				sender: localStorage.getItem("username"),
+				room: this.state.room,
+				message: this.state.message,
+			});
+			return{
+				chat: [...state.chat,{
+					sender: localStorage.getItem("username"),
+					room: this.state.room,
+					message: this.state.message,
+				}],
+				message: '',
+			}
+		}, this.scrollToBottom);
 	};
 	
-	const scrollToBottom = () => {
+	scrollToBottom() {
 		const chat = document.getElementById('chat');
 		chat.scrollTop = chat.scrollHeight;
-	};
-	useEffect(() => {
-		const socket = io(config[process.env.NODE_ENV].endpoint);
-		socket.on("init", data => {
-		  setResponse(data);
-		});
-
-		// CLEAN UP THE EFFECT
-		return () => socket.disconnect();
-    //
-  }, []);
+	}
 	
-    return (
-      <div>
-	  {userData.user ? (
-	  <div className="App">
-        <Paper id="chat" elevation={3}>
-          {chat.map((el, index) => {
-            return (
-              <div key={index}>
-                <Typography variant="body1" className="message">
-                  {el.message}
-                </Typography>
-              </div>
-            );
-          })}
-        </Paper>
-        <BottomBar
-          message={message}
-          handleContent={handleContent.bind(this)}
-          handleSubmit={handleSubmit.bind(this)}
-        />
-      </div>
-    ):(
-		<>
-			<h2>You are not logged in</h2>
-			<Link to="/login">Log in</Link>
-		</>
-	)}
-	</div>);
+	render() {
+		return (
+		  <div>
+		  {this.state.sender ? (
+		  <div className="App">
+			<Paper id="chat" elevation={3}>
+			  {this.state.chat.map((el, index) => {
+				return (
+				  <div key={index}>
+					<Typography variant="body1" className="message">
+					  {el.message}
+					</Typography>
+				  </div>
+				);
+			  })}
+			</Paper>
+			<BottomBar
+			  message={this.state.message}
+			  handleContent={this.handleContent.bind(this)}
+			  handleSubmit={this.handleSubmit.bind(this)}
+			/>
+		  </div>
+		):(
+			<>
+				<h2>You are not logged in</h2>
+				<Link to="/login">Log in</Link>
+			</>
+		)}
+		</div>);
+	}
 };
+
+export default App; 

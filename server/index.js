@@ -7,7 +7,7 @@ const io = require('socket.io')(http);
 const uri = process.env.MONGODB_URI;
 const port = process.env.PORT || 5000;
 
-const Room = require('./models/Room');
+const Message = require('./models/Message');
 const mongoose = require('mongoose');
 
 const cors = require('cors');
@@ -32,19 +32,28 @@ mongoose.connect(uri, {
 
 
 io.on('connection', (socket) => {
-	Room.find().sort({createdAt: -1}).exec((err, messages) => {
+	var room;
+	socket.on('room', (msg) => {
+		socket.join(msg.room);
+		room = msg.room;
+	})
+	
+	Message.find({room: room}).sort({createdAt: -1}).exec((err, messages) => {
 		if (err) return console.error(err);
+		console.log(messages);
 		socket.emit('init',messages);	
 	});
+	
 	socket.on('message', (msg) => {
-		const message = new mongoose.Schema({
-			content: msg.content,
+		const message = new Message({
+			message: msg.message,
 			sender: msg.sender,
+			room: msg.room,
 		});
 		message.save((err)=>{
 			if (err) return console.error(err);
 		});
-		socket.to(msg.from).emit('Message',msg);
+		socket.in(msg.room).emit('push',msg);
 	});
 });
 
