@@ -2,6 +2,8 @@ import React , {useContext, useEffect, useState} from "react";
 import UserContext from "../context/userContext";
 import Axios from "axios";
 import { Link } from "react-router-dom";
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 export default function Home (){
 	
@@ -35,15 +37,15 @@ export default function Home (){
 	const createTable = (index) => {
 		if (!data) return null;
 		
-		if (!data.length) return (<div> Create Room </div>);
+		if (!data.length) return (<Link to="/addRoom"><Card className="roomCard"><CardContent> Create Room</CardContent></Card></Link>);
 		
-		var rooms = [<Link to="/addRoom"><div> Create Room </div></Link>];
+		var rooms = [<Link to="/addRoom"><Card className="roomCard"><CardContent> Create Room</CardContent></Card></Link>];
 		rooms.push(data.map((room, index) => 
 			(
 			<Link to={"chat/"+room.roomName}>
-			<div key={index} >
-				<p>{room.roomName}</p>
-			</div>
+			<Card className="roomCard" key={index} >
+				<CardContent>{room.roomName}</CardContent>
+			</Card>
 			</Link>
 		)));
 		return rooms;

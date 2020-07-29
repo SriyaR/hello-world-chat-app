@@ -11,11 +11,13 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     bottom: 0,
     top: 'auto',
+	color: '#116466',
+	backgroundColor: '#4E9DA2',
   },
   inputContainer: {
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: '#D1E8E2',
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: '#C1E7E1',
     },
     borderRadius: theme.shape.borderRadius,
     marginLeft: theme.spacing(1),

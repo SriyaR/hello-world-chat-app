@@ -80,7 +80,10 @@ class App extends React.Component{
 			<Paper id="chat" elevation={3}>
 			  {this.state.chat.map((el, index) => {
 				return (
-				  <div key={index}>
+				  <div className="msg" key={index}>
+					<Typography variant="caption" className="sender">
+					  {el.sender}
+					</Typography>
 					<Typography variant="body1" className="message">
 					  {el.message}
 					</Typography>

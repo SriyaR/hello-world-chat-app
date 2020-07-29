@@ -44,6 +44,8 @@ li {
 
 body {
   font-family: "Roboto", sans-serif;
+  background-color: #116466;
+  color: #D1E8E2;
 }
 
 .page {
@@ -52,7 +54,7 @@ body {
 
 .container {
   margin: 0 auto;
-  max-width: 1300px;
+  max-width: 1250px;
 }
 
 /* header */
@@ -62,12 +64,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: green;
+  background-color: #116466;
+  margin: 10px;
 }
 #header .title {
   margin: 0;
   padding: 0 1rem;
-  color: #ffffff;
+  color: #D1E8E2;
 }
 #header .auth-options {
   height: 100%;
@@ -75,12 +78,13 @@ body {
 }
 #header .auth-options button {
   padding: 0 1rem;
-  background-color: #228B22;
-  color: #ffffff;
+  background-color: #D1E8E2;
+  color: #116466;
   font-size: 1.1rem;
+  margin: 2px;
 }
 #header .auth-options button:hover {
-  background-color: #be3a3a;
+  background-color: white;
 }
 
 /* form */
@@ -102,7 +106,8 @@ body {
   padding: 0.3rem;
   border: 1px solid #c2c2c2;
   border-radius: 8px;
-  background-color: #f0f0f0;
+  background-color: #D1E8E2;
+  color: #116466;
   font-size: 1.1rem;
 }
 .form input:focus {
@@ -112,13 +117,13 @@ body {
 }
 .form input[type="submit"] {
   padding: 0.3rem 0.5rem;
-  border-radius: 8px;
-  background-color: green;
-  color: white;
+  border-radius: 4px;
+  background-color: #D1E8E2;
+  color: #116466;
   font-size: 1.1rem;
 }
 .form input[type="submit"]:hover{
-	background-color: #be3a3a;
+	background-color: white;
 }
 /* todo list */
 
@@ -151,6 +156,23 @@ body {
   color: #ffffff;
 }
 
+.msg{
+	border: 1px solid #116466;
+	background-color: #D1E8E2;
+	color: #116466;
+}
+
+.roomCard{
+	float: left;
+	width: 150px;
+	height:150px;
+	line-height:100px;
+	display: inline-block !important;
+	margin: 6px;
+	background-color: #D1E8E2 !important;
+	color: #116466 !important;
+	text-align: center;
+}
 /* media queries */
 
 @media screen and (max-width: 550px) {
