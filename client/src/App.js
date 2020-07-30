@@ -24,7 +24,8 @@ export default function App()
 				localStorage.setItem("auth-token", "");
 				token = "";
 			}
-			const userRes = await Axios.get("http://localhost:5000/users/", {
+			const baseUrl = (process.env.NODE_ENV==="production" ? process.env.REACT_APP_PRODUCTION : process.env.REACT_APP_DEVELOPMENT);
+			const userRes = await Axios.get(baseUrl+"users/", {
 				headers: { "x-auth-token": token },
 			});
 			setUserData({

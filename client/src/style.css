@@ -125,16 +125,14 @@ body {
 .form input[type="submit"]:hover{
 	background-color: white;
 }
-/* todo list */
-
-.todo-list ul {
-  list-style: disc;
-  cursor: pointer;
+/* chat */
+#chat{
+	overflow-y: scroll;
+	height: 450px;
+	background-color: #116466;
+	border: 0px;
 }
 
-.todo-list li:hover {
-  text-decoration: line-through;
-}
 
 /* error notice */
 

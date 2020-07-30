@@ -4,6 +4,7 @@ import UserContext from "../context/userContext";
 import Axios from "axios";
 import ErrorNotice from "./ErrorNotice";
 
+
 export default function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -16,9 +17,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const loginUser = { email, password };
-	  const production  = 'https://hello-world-chat-app.herokuapp.com/';
-	  const development = 'http://localhost:5000/';
-	  const baseUrl = (process.env.NODE_ENV==="production" ? production : development);
+	  const baseUrl = (process.env.NODE_ENV==="production" ? process.env.REACT_APP_PRODUCTION : process.env.REACT_APP_DEVELOPMENT);
       const loginRes = await Axios.post(
         baseUrl+"users/login",
         loginUser

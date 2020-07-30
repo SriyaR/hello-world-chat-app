@@ -44,10 +44,11 @@ io.on('connection', (socket) => {
 	
 	
 	
-	socket.on('message', (msg) => {
+    socket.on('message', (msg) => {
+        
 		const message = new Message({
 			message: msg.message,
-			sender: msg.sender,
+			sender:table[socket.id],
 			room: msg.room,
 		});
 		message.save((err)=>{
@@ -60,3 +61,4 @@ io.on('connection', (socket) => {
 http.listen(port, () => {
 	console.log('listening on *:'+port);
 });
+

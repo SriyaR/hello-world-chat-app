@@ -21,7 +21,7 @@ router.post("/create", async (req, res) => {
 				return res.status(400).json({msg:'Display Name does not exist'});
 			
 			updates.push({ updateOne: { filter: {"name" : username}, update: {$addToSet:{"room": {"roomName": name}}}}});
-			userList.push({"username": username})
+            userList.push({ "username": username });
 		}
 		const newRoom = new Room({
 			name,
