@@ -11,4 +11,3 @@ A Simple Chat Application built using MERN Stack
 * Validaiton with @hapi/joi
 * Seperate routes and controllers
 * Reduce strain on sockets for fetching data
-* Leave room when disconnecting a socket
